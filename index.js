@@ -5,7 +5,7 @@ const fileUpload = require('express-fileupload');
 const port = 3000;
 
 const app = express();
-app.use(express.urlencoded({limit:2000000,extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static('documents'));
 app.use(cors());
