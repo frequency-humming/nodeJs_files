@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-var fs = require('fs');
+const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const port = 3000;
 
@@ -11,6 +11,17 @@ app.use(express.static('documents'));
 app.use(cors());
 app.use(fileUpload());
 
+app.get('/testing', (req,res) => {
+    let token = req.get('x-api-key');
+    let file = req.body.name;
+    if(fs.existsSync(`${__dirname}/documents/${file}`) && token){
+        const stream = fs.createReadStream(`${__dirname}/documents/${file}`);
+        stream.pipe(res);
+        stream.on('error',(err) => res.send('Invalid Request'));
+    }else{
+        return res.send('Invalid Request');
+    }
+});
 
 app.post('/test', async (req, res) => {
     
