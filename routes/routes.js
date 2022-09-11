@@ -2,7 +2,7 @@ const fs = require('fs');
 
 module.exports = function(app){
 
-    app.get('/testing', (req,res) => {
+    app.post('/testing', (req,res) => {
         let token = req.get('x-api-key');
         let file = req.body.name;
         if(fs.existsSync(`${__dirname}/documents/${file}`) && token){
@@ -12,7 +12,7 @@ module.exports = function(app){
         }else{
             return res.send('Invalid Request');
         }
-    });   
+    });  
     app.post('/test', async (req, res) => {
         
         let token = req.get('x-api-key');
