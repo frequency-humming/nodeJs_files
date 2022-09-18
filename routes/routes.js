@@ -32,4 +32,17 @@ module.exports = function(app){
             return res.send('Invalid Request');
         }  
     });
+
+    app.post('/testtest', (req,res) => {
+        let token = req.get('x-api-key');
+        let file = req.body.name;
+        if(fs.existsSync(`${__dirname}/documents/${file}`) && token){
+            fs.readFile(`${__dirname}/documents/${file}`, (err,data) => {
+                console.log(data);
+                return res.send(Buffer.from(data).toString('base64'));
+            });
+        }else{
+            return res.send('Invalid Request');
+        }
+    });
 }
