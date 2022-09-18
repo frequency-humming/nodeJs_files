@@ -10,6 +10,7 @@ module.exports = function(app){
             stream.pipe(res);
             stream.on('error',(err) => res.send('Invalid Request'));
         }else{
+            res.status(400);
             return res.send('Invalid Request');
         }
     });  
@@ -18,6 +19,7 @@ module.exports = function(app){
         let token = req.get('x-api-key');
         let size = req.get('Content-Length');
         if(!token || size > 2000000){
+            res.status(400);
             return res.send('Invalid Request');
         }
         try {
@@ -28,7 +30,7 @@ module.exports = function(app){
             return res.json({'Response':'File Uploaded'});
     
         } catch (err){
-            console.log(err);
+            res.status(400);
             return res.send('Invalid Request');
         }  
     });
@@ -38,10 +40,10 @@ module.exports = function(app){
         let file = req.body.name;
         if(fs.existsSync(`${__dirname}/documents/${file}`) && token){
             fs.readFile(`${__dirname}/documents/${file}`, (err,data) => {
-                console.log(data);
                 return res.send(Buffer.from(data).toString('base64'));
             });
         }else{
+            res.status(400);
             return res.send('Invalid Request');
         }
     });
