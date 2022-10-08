@@ -13,7 +13,9 @@ app.use(cors({
   }));
 app.use((req,res,next)=>{
   let env = process.env.validIP;
+  console.log(env);
   let accept = env.split(',');
+  console.log(accept);
   if(accept.includes(req.socket.remoteAddress)){
     next();
   } else {
