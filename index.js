@@ -7,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(fileUpload());
-//app.set('trust proxy',true);
+app.set('trust proxy',true);
 app.use(cors({
     origin: 'https://www.*.my.salesforce.com'
   }));
@@ -16,7 +16,7 @@ app.use((req,res,next)=>{
   console.log(env);
   let accept = env.split(',');
   console.log(accept);
-  if(accept.includes(req.socket.remoteAddress)){
+  if(accept.includes(req.ip)){
     next();
   } else {
     const error = new Error('Invalid Request');
