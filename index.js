@@ -12,6 +12,7 @@ app.use(cors({
     origin: 'https://www.*.my.salesforce.com'
   }));
 app.use((req,res,next)=>{
+  console.log(req.ip);
   let env = process.env.validIP;
   let accept = env.split(',');
   if(accept.includes(req.ip)){
