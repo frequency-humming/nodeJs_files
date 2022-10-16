@@ -1,5 +1,7 @@
 const fs = require('fs');
-
+const axios = require('axios');
+let acctoken = '';
+const { SF_LOGIN_URL, SF_USERNAME, SF_PASSWORD, SF_TOKEN,SF_INSTANCE,CONSUMER_KEY,CONSUMER_SECRET } = process.env;
 module.exports = function(app) {
     app.post('/testing', (req, res) => {
         let token = req.get('x-api-key');
@@ -33,10 +35,67 @@ module.exports = function(app) {
         }
     });
     app.post('/testingpattern',async (req, res) => {
-        console.log(req.body.filename);
-        console.log(req.body.great);
-        return res.send('Completed');
+        let name = req.body.filename;
+        let url = req.body.url;
+        let token = req.get('x-api-key');
+        if(!token){
+            res.status(400);
+            return res.send('Invalid Request');
+        }
+        acctoken = await authReq();
+        if(acctoken){
+            let file = await download(name,url);
+            if(file){
+                console.log(file);
+                res.send(file);
+            }
+        }
     });
+    async function download(name,url) {
+        let FileName = name;
+        return axios({
+            url: SF_INSTANCE+url,
+            headers: {
+                'Content-Type': 'application/octet-stream',
+                'Authorization': 'Bearer ' + acctoken
+            },
+            responseType: 'stream'
+          })
+            .then(function (response) {
+              response.data.pipe(fs.createWriteStream(`${__dirname}/documents/${FileName}`));
+            }).then(function(){
+                return 'Completed';
+            })
+            .catch(function (error) {
+                console.log(error);
+                return 'Error';
+            });
+    }
+    
+    async function authReq() {
+        var data = {
+            'grant_type': 'password',
+            'client_id': CONSUMER_KEY,
+            'client_secret': CONSUMER_SECRET,
+            'username': SF_USERNAME,
+            'password': SF_PASSWORD+SF_TOKEN
+          };
+          var config = {
+            method: 'post',
+            url: SF_LOGIN_URL,
+            headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data : data
+          };
+          
+          const callout = await axios(config);
+          const calloutRequest = async () => {
+            await callout;
+          }
+          return callout.data.access_token;
+    }
+
     //significantly slower than the stream path -> adding an average of 1 second to 1 an a half seconds delay in response
     //no errors with 200 to 300 parallel users during 2 seconds
     app.post('/testtest', (req, res) => {
