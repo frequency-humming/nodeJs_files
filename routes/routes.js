@@ -1,7 +1,7 @@
 const fs = require('fs');
 const axios = require('axios');
 let acctoken = '';
-const { SF_LOGIN_URL, SF_USERNAME, SF_PASSWORD, SF_TOKEN,SF_INSTANCE,CONSUMER_KEY,CONSUMER_SECRET } = process.env;
+
 module.exports = function(app) {
     app.post('/testing', (req, res) => {
         let token = req.get('x-api-key');
@@ -54,7 +54,7 @@ module.exports = function(app) {
     async function download(name,url) {
         let FileName = name;
         return axios({
-            url: SF_INSTANCE+url,
+            url: process.env.SF_INSTANCE+url,
             headers: {
                 'Content-Type': 'application/octet-stream',
                 'Authorization': 'Bearer ' + acctoken
@@ -75,14 +75,14 @@ module.exports = function(app) {
     async function authReq() {
         var data = {
             'grant_type': 'password',
-            'client_id': CONSUMER_KEY,
-            'client_secret': CONSUMER_SECRET,
-            'username': SF_USERNAME,
-            'password': SF_PASSWORD+SF_TOKEN
+            'client_id': process.env.CONSUMER_KEY,
+            'client_secret': process.env.CONSUMER_SECRET,
+            'username': process.env.SF_USERNAME,
+            'password': process.env.SF_PASSWORD+process.env.SF_TOKEN
           };
           var config = {
             method: 'post',
-            url: SF_LOGIN_URL,
+            url: process.env.SF_LOGIN_URL,
             headers: { 
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
