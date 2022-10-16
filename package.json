@@ -10,6 +10,7 @@
   "author": "bruforce",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.1.3",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-fileupload": "^1.4.0"
