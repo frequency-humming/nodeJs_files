@@ -39,7 +39,7 @@ module.exports = function(app) {
         let url = req.body.url;
         let token = req.get('x-api-key');
         let size = req.get('Content-Length');
-        if(!token || size > 2000000){
+        if(!token || size > 1000000){
             res.status(400);
             return res.send('Invalid Request');
         }
