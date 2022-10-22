@@ -38,7 +38,8 @@ module.exports = function(app) {
         let name = req.body.filename;
         let url = req.body.url;
         let token = req.get('x-api-key');
-        if(!token){
+        let size = req.get('Content-Length');
+        if(!token || size > 2000000){
             res.status(400);
             return res.send('Invalid Request');
         }
@@ -48,7 +49,13 @@ module.exports = function(app) {
             if(file){
                 console.log(file);
                 res.send(file);
+            }else{
+                res.status(400);
+                return res.send('Invalid Request URL'); 
             }
+        }else{
+            res.status(400);
+            return res.send('Invalid Request Login');
         }
     });
     async function download(name,url) {
